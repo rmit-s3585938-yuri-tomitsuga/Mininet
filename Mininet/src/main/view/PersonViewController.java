@@ -1,9 +1,13 @@
 package main.view;
 
+import java.io.File;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import main.MiniNet;
 import main.model.*;
 
@@ -23,6 +27,10 @@ public class PersonViewController {
 	private Label stateLabel;
 	@FXML
 	private Label statusLabel;
+	@FXML
+	private Label imageLabel;
+	@FXML
+	private ImageView imageView;
 
 	// Reference to the main application.
 	private MiniNet miniNet;
@@ -46,8 +54,18 @@ public class PersonViewController {
 		showPersonDetails(null);
 
 		// Listen for selection changes and show the person details when changed.
-		personTable.getSelectionModel().selectedItemProperty()
-				.addListener((observable, oldValue, newValue) -> showPersonDetails(newValue));
+		personTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			showPersonDetails(newValue);
+			this.imageLabel.setText("");
+			this.imageView.setImage(null);
+			if (newValue.getImage().isEmpty()) {
+				this.imageLabel.setText("No Image");
+			} else {
+//				System.out.println(newValue.getImage());
+				Image image = new Image(new File(newValue.getImage()).toURI().toString());
+				this.imageView.setImage(image);
+			}
+		});
 	}
 
 	private void showPersonDetails(Person person) {
@@ -81,13 +99,13 @@ public class PersonViewController {
 		if (okClicked) {
 			if (tempPerson.getAge() > 16) {
 				tempP = new Adult(tempPerson.getName(), tempPerson.getGender(), tempPerson.getAge(),
-						tempPerson.getState(), tempPerson.getStatus());
+						tempPerson.getState(), tempPerson.getStatus(), tempPerson.getImage());
 			} else if (tempPerson.getAge() <= 2) {
 				tempP = new YoundChild(tempPerson.getName(), tempPerson.getGender(), tempPerson.getAge(),
-						tempPerson.getState(), tempPerson.getStatus());
+						tempPerson.getState(), tempPerson.getStatus(), tempPerson.getImage());
 			} else {
 				tempP = new Child(tempPerson.getName(), tempPerson.getGender(), tempPerson.getAge(),
-						tempPerson.getState(), tempPerson.getStatus());
+						tempPerson.getState(), tempPerson.getStatus(), tempPerson.getImage());
 			}
 			miniNet.getPersonData().add(tempP);
 		}

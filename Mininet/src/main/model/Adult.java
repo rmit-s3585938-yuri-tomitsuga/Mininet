@@ -13,10 +13,8 @@ public class Adult extends Person implements SpouseRelation, ParentRelation,Coll
 	private List<Adult> colleagues = new ArrayList<Adult>();
 	private ArrayList<Person> classmates = new ArrayList<Person>();
 
-	public Adult(String name, String gender, Integer age, String state, String status) {
-		super(name, gender, age, state, status);
-		System.out.println("adult!");
-
+	public Adult(String name, String gender, Integer age, String state, String status, String image) {
+		super(name, gender, age, state, status,image);
 	}
 
 	/**
@@ -52,47 +50,55 @@ public class Adult extends Person implements SpouseRelation, ParentRelation,Coll
 	public void addSpouse(Adult person) throws Exception {
 		// TODO Auto-generated method stub
 		this.spouse = (Adult) person;
+		this.connections.put(person, "spouse");
 	}
 	@Override
 	public void delSpouse(Adult person) throws Exception {
 		// TODO Auto-generated method stub
 		this.spouse = null;
+		this.connections.remove(person);
 	}
 
 	@Override
 	public void addDependent(Kid person) throws Exception {
 		// TODO Auto-generated method stub
 		kid.add(person);
+		this.connections.put(person, "kids");
 	}
 
 	@Override
 	public void delDependent(Kid person) throws Exception {
 		// TODO Auto-generated method stub
 		kid.remove(person);
+		this.connections.remove(person);
 	}
 
 	@Override
 	public void addColleague(Adult person) throws Exception {
 		// TODO Auto-generated method stub
 		colleagues.add(person);
+		this.connections.put(person,"colleagues");
 	}
 
 	@Override
 	public void delColleague(Adult person) throws Exception {
 		// TODO Auto-generated method stub
 		colleagues.remove(person);
+		this.connections.remove(person);
 	}
 
 	@Override
 	public void addClassmate(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		classmates.add(person);
+		this.connections.put(person,"classmates");
 	}
 
 	@Override
 	public void delClassmate(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		classmates.remove(person);
+		this.connections.remove(person);
 	}
 
 	/**

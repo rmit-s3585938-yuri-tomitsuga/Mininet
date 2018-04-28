@@ -6,8 +6,8 @@ public class YoundChild extends Kid {
 		// TODO Auto-generated constructor stub
 	}
 
-	public YoundChild(String name, String gender, Integer age, String state, String status) {
-		super(name, gender, age, state, status);
+	public YoundChild(String name, String gender, Integer age, String state, String status, String image) {
+		super(name, gender, age, state, status, image);
 		// TODO Auto-generated constructor stub
 	}
 

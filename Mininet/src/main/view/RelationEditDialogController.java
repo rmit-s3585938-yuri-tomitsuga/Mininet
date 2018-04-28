@@ -2,9 +2,9 @@ package main.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.MiniNet;
 import main.model.*;
@@ -20,7 +20,9 @@ public class RelationEditDialogController {
 	@FXML
 	private TableColumn<Person, String> nameColumn2;
 	@FXML
-	private ChoiceBox chB;
+	private ChoiceBox<String> chB;
+	@FXML
+	private Label relationLabel;
 
 	// Reference to the main application.
 	private MiniNet miniNet;
@@ -33,7 +35,57 @@ public class RelationEditDialogController {
 	private void initialize() {
 		nameColumn1.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 		nameColumn2.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-		chB.getItems().addAll("Spouse", "Parent", "Friend", "Colleague", "Classmate");
+		chB.getItems().addAll("Spouse", "Parent", "Friend", "Colleague", "Classmate", "Disconnect Relation");
+		table1Listener();
+		table2Listener();
+	}
+	
+	private void table1Listener() {
+		personTable1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (!personTable2.getSelectionModel().isEmpty()) {
+				Person p1 = personTable1.getSelectionModel().getSelectedItem();
+				Person p2 = personTable2.getSelectionModel().getSelectedItem();
+				if (p1.connections.containsKey(p2)) {
+					if (p1.connections.get(p2).equals("spouse")) {
+						relationLabel.setText("Spouse");
+					} else if (p1.connections.get(p2).equals("parents") || p1.connections.get(p2).equals("kids")) {
+						relationLabel.setText("Parent & Child");
+					} else if (p1.connections.get(p2).equals("friends")) {
+						relationLabel.setText("Friends");
+					} else if (p1.connections.get(p2).equals("colleagues")) {
+						relationLabel.setText("Colleagues");
+					} else if (p1.connections.get(p2).equals("classmates")) {
+						relationLabel.setText("Classmates");
+					}
+				} else
+					relationLabel.setText("No direct relationship");
+
+			}
+		});
+	}
+	
+	private void table2Listener() {
+		personTable2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (!personTable1.getSelectionModel().isEmpty()) {
+				Person p1 = personTable1.getSelectionModel().getSelectedItem();
+				Person p2 = personTable2.getSelectionModel().getSelectedItem();
+				if (p1.connections.containsKey(p2)) {
+					if (p1.connections.get(p2).equals("spouse")) {
+						relationLabel.setText("Spouse");
+					} else if (p1.connections.get(p2).equals("parents") || p1.connections.get(p2).equals("kids")) {
+						relationLabel.setText("Parent & Child");
+					} else if (p1.connections.get(p2).equals("friends")) {
+						relationLabel.setText("Friends");
+					} else if (p1.connections.get(p2).equals("colleagues")) {
+						relationLabel.setText("Colleagues");
+					} else if (p1.connections.get(p2).equals("classmates")) {
+						relationLabel.setText("Classmates");
+					}
+				} else
+					relationLabel.setText("No direct relationship");
+
+			}
+		});
 	}
 
 	/**

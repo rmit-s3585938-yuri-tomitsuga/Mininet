@@ -1,5 +1,6 @@
 package main.model;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
@@ -22,26 +23,29 @@ public class Person implements FriendRelation {
     private final IntegerProperty age;
     private final StringProperty state;
     private final StringProperty status;
+    private final StringProperty image;
 
+    public HashMap<Person, String> connections = new HashMap<Person, String>();
     private List<Person> friends = new ArrayList<Person>();
     /**
      * Default constructor.
      */
     public Person() {
-        this(null,null,null,null,null);
+        this(null,null,null,null,null,null);
     }
 
     /**
      * Constructor with some initial data.
      * 
      */
-    public Person(String name, String gender, Integer age, String state, String status) {
+    public Person(String name, String gender, Integer age, String state, String status, String image) {
         this.name = new SimpleStringProperty(name);
         this.gender = new SimpleStringProperty(gender);
         this.age = new SimpleIntegerProperty();
         this.age.setValue(age);
         this.state = new SimpleStringProperty(state);
         this.status = new SimpleStringProperty(status);
+        this.image = new SimpleStringProperty(image);
        
     }
 
@@ -104,17 +108,31 @@ public class Person implements FriendRelation {
     public StringProperty statusProperty() {
         return status;
     }
+    
+    public String getImage() {
+        return image.get();
+    }
+
+    public void setImage(String image) {
+        this.image.set(image);
+    }
+
+    public StringProperty imageProperty() {
+        return image;
+    }
 
 	@Override
 	public void addFriend(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		this.friends.add(person);
+		this.connections.put(person, "friends");
 	}
 
 	@Override
 	public void delFriend(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		this.friends.remove(person);
+		this.connections.remove(person);
 	}
 
 }

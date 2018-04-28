@@ -11,8 +11,8 @@ public class Child extends Kid implements ClassmateRelation{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Child(String name, String gender, Integer age, String state, String status) {
-		super(name, gender, age, state, status);
+	public Child(String name, String gender, Integer age, String state, String status, String image) {
+		super(name, gender, age, state, status, image);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -20,12 +20,14 @@ public class Child extends Kid implements ClassmateRelation{
 	public void addClassmate(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		classmates.add(person);
+		this.connections.put(person,"classmates");
 	}
 
 	@Override
 	public void delClassmate(Person person) throws Exception {
 		// TODO Auto-generated method stub
 		classmates.remove(person);
+		this.connections.remove(person);
 	}
 
 }
