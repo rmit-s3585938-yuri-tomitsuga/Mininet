@@ -3,6 +3,7 @@ package main.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import main.model.Adult;
 import main.model.Person;
 
 /**
@@ -43,16 +44,16 @@ public class PersonEditDialogController {
 	 * 
 	 * @param person
 	 */
-	public void setPerson(Person person) {
+	public void setPerson(Person person, boolean add) {
 		this.person = person;
 
+		if(!add) {
 		nameField.setText(person.getName());
 		genderField.setText(person.getGender());
 		stateField.setText(person.getState());
-		if (!nameField.getText().isEmpty()) {
-			ageField.setText(Integer.toString(person.getAge()));
-		}
+		ageField.setText(Integer.toString(person.getAge()));
 		statusField.setText(person.getStatus());
+		}
 	}
 
 	/**
@@ -69,7 +70,6 @@ public class PersonEditDialogController {
 	 */
 	@FXML
 	private void handleOk() {
-		// if (isInputValid()) {
 		person.setName(nameField.getText());
 		person.setGender(genderField.getText());
 		person.setState(stateField.getText());
@@ -78,7 +78,6 @@ public class PersonEditDialogController {
 
 		okClicked = true;
 		dialogStage.close();
-		// }
 	}
 
 	/**

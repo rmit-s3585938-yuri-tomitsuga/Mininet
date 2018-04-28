@@ -11,9 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import main.model.Person;
+import main.model.*;
 import main.view.PersonEditDialogController;
 import main.view.PersonViewController;
+import main.view.RelationEditDialogController;
 
 public class MiniNet extends Application {
 
@@ -24,10 +25,10 @@ public class MiniNet extends Application {
     
     public MiniNet() {
         // Add some sample data
-        personData.add(new Person("Tom", "M", 15, "VIC", "Student"));
-        personData.add(new Person("Rose", "F", 65, "VIC", "Retired"));
-        personData.add(new Person("Emily", "F", 25, "VIC", "Work in an office"));
-        personData.add(new Person("Jack", "M", 35, "VIC", "Idle"));
+        personData.add(new Child("Tom", "M", 15, "VIC", "Student"));
+        personData.add(new Adult("Rose", "F", 65, "VIC", "Retired"));
+        personData.add(new Adult("Emily", "F", 25, "VIC", "Work in an office"));
+        personData.add(new YoundChild("Jack", "M", 1, "VIC", "Baby"));
 
     }
     
@@ -74,7 +75,7 @@ public class MiniNet extends Application {
      * @param person the person object to be edited
      * @return true if the user clicked OK, false otherwise.
      */
-    public boolean showPersonEditDialog(Person person) {
+    public boolean showPersonEditDialog(Person person, boolean add) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
@@ -92,7 +93,37 @@ public class MiniNet extends Application {
             // Set the person into the controller.
             PersonEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setPerson(person);
+            controller.setPerson(person,add);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean showRelationEditDialog() {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MiniNet.class.getResource("view/RelationEditDialog.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Relation");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the person into the controller.
+            RelationEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setMiniNet(this);
+//            controller.setPerson(person,add);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();

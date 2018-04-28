@@ -69,7 +69,7 @@
                         <Button mnemonicParsing="false" onAction="#handleDeletePerson" text="Delete" />
                      </children>
                   </HBox>
-                  <Button layoutX="311.0" layoutY="261.0" mnemonicParsing="false" text="Edit Relation" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="5.0" />
+                  <Button layoutX="311.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleEditRelation" text="Edit Relation" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="5.0" />
                </children>
             </AnchorPane>
         </items>

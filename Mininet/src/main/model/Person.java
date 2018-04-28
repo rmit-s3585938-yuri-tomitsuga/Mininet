@@ -1,16 +1,21 @@
 package main.model;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import main.model.*;
+import main.model.relation.FriendRelation;
 
 /**
  * Model class for a Person.
  *
  */
-public class Person {
+public class Person implements FriendRelation {
 
     private final StringProperty name;
     private final StringProperty gender;
@@ -18,6 +23,7 @@ public class Person {
     private final StringProperty state;
     private final StringProperty status;
 
+    private List<Person> friends = new ArrayList<Person>();
     /**
      * Default constructor.
      */
@@ -98,5 +104,17 @@ public class Person {
     public StringProperty statusProperty() {
         return status;
     }
+
+	@Override
+	public void addFriend(Person person) throws Exception {
+		// TODO Auto-generated method stub
+		this.friends.add(person);
+	}
+
+	@Override
+	public void delFriend(Person person) throws Exception {
+		// TODO Auto-generated method stub
+		this.friends.remove(person);
+	}
 
 }

@@ -3,14 +3,19 @@ package main.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Adult extends Person{
+import main.model.relation.*;
+
+public class Adult extends Person implements SpouseRelation, ParentRelation,ColleagueRelation,ClassmateRelation{
 
 	private Adult spouse;
 
-	private List<Dependent> children;
+	private List<Kid> kid = new ArrayList<Kid>();
+	private List<Adult> colleagues = new ArrayList<Adult>();
+	private ArrayList<Person> classmates = new ArrayList<Person>();
 
 	public Adult(String name, String gender, Integer age, String state, String status) {
 		super(name, gender, age, state, status);
+		System.out.println("adult!");
 
 	}
 
@@ -43,22 +48,69 @@ public class Adult extends Person{
 
 	}
 
-	/**
-	 * @return the children
-	 */
-	public List<Dependent> getChildren() {
-		if (children == null) {
-			children = new ArrayList<Dependent>();
-		}
-		return children;
+	@Override
+	public void addSpouse(Adult person) throws Exception {
+		// TODO Auto-generated method stub
+		this.spouse = (Adult) person;
+	}
+	@Override
+	public void delSpouse(Adult person) throws Exception {
+		// TODO Auto-generated method stub
+		this.spouse = null;
+	}
+
+	@Override
+	public void addDependent(Kid person) throws Exception {
+		// TODO Auto-generated method stub
+		kid.add(person);
+	}
+
+	@Override
+	public void delDependent(Kid person) throws Exception {
+		// TODO Auto-generated method stub
+		kid.remove(person);
+	}
+
+	@Override
+	public void addColleague(Adult person) throws Exception {
+		// TODO Auto-generated method stub
+		colleagues.add(person);
+	}
+
+	@Override
+	public void delColleague(Adult person) throws Exception {
+		// TODO Auto-generated method stub
+		colleagues.remove(person);
+	}
+
+	@Override
+	public void addClassmate(Person person) throws Exception {
+		// TODO Auto-generated method stub
+		classmates.add(person);
+	}
+
+	@Override
+	public void delClassmate(Person person) throws Exception {
+		// TODO Auto-generated method stub
+		classmates.remove(person);
 	}
 
 	/**
-	 * @param children the children to add
+	 * @return the children
 	 */
-	public void addChildren(Dependent child) {
-		getChildren().add(child);
-	}
+//	public List<Dependent> getChildren() {
+//		if (children == null) {
+//			children = new ArrayList<Dependent>();
+//		}
+//		return children;
+//	}
+//
+//	/**
+//	 * @param children the children to add
+//	 */
+//	public void addChildren(Dependent child) {
+//		getChildren().add(child);
+//	}
 
 //	@Override
 //	public String toString() {
