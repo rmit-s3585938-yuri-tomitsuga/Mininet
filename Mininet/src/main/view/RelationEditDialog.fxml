@@ -49,9 +49,10 @@
                <children>
                   <HBox layoutX="224.0" layoutY="14.0" spacing="15.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="5.0">
                      <children>
-                        <ChoiceBox fx:id="chB" prefWidth="150.0" />
-                        <Button mnemonicParsing="false" onAction="#handleOk" text="OK" />
-                        <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+                        <Label prefHeight="27.0" prefWidth="130.0" text="Change Relationship:" />
+                        <ChoiceBox fx:id="chB" prefHeight="27.0" prefWidth="99.0" />
+                        <Button mnemonicParsing="false" onAction="#handleOk" text="Apply" />
+                        <Button mnemonicParsing="false" onAction="#handleCancel" text="Close" />
                      </children>
                   </HBox>
                   <HBox layoutX="8.0" layoutY="19.0" spacing="10.0">
@@ -60,6 +61,7 @@
                         <Label fx:id="relationLabel" />
                      </children>
                   </HBox>
+                  <Button layoutX="290.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" AnchorPane.rightAnchor="10.0" />
                </children>
             </AnchorPane>
         </items>

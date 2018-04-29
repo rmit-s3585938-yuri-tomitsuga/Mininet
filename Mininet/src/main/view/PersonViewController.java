@@ -58,10 +58,12 @@ public class PersonViewController {
 			showPersonDetails(newValue);
 			this.imageLabel.setText("");
 			this.imageView.setImage(null);
-			if (newValue.getImage().isEmpty()) {
+			if (newValue.getImage() == null) {
+				this.imageLabel.setText("No Image");
+			} else if (newValue.getImage().isEmpty()) {
 				this.imageLabel.setText("No Image");
 			} else {
-//				System.out.println(newValue.getImage());
+				// System.out.println(newValue.getImage());
 				Image image = new Image(new File(newValue.getImage()).toURI().toString());
 				this.imageView.setImage(image);
 			}

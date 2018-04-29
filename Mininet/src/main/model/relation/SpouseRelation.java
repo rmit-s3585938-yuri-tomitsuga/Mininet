@@ -1,9 +1,9 @@
 package main.model.relation;
 
-import main.model.Adult;
+import main.model.Person;
 
 public interface SpouseRelation {
 
-	public void addSpouse(Adult person) throws Exception;
-	public void delSpouse(Adult person) throws Exception;
+	public boolean addSpouse(Person person) throws Exception;
+	public boolean delSpouse(Person person) throws Exception;
 }

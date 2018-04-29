@@ -1,5 +1,7 @@
 Alex Smith, , student at RMIT, M, 21, WA
 Ben Turner, Ben.jpg, manager at Coles, M, 35, VIC
 Hannah White, Hannah.jpg, student at PLC, F, 14, VIC
+Child White, , student at PLC, F, 10, VIC
 Zoe Foster, , Founder of ZFX, F, 28, VIC
 Mark Turner, Mark.jpg, , M, 2, VIC
+Jessie James, , student at RMIT, F, 22, WA
