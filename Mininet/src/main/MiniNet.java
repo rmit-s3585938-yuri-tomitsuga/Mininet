@@ -10,21 +10,29 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.model.*;
 import main.view.PersonEditDialogController;
-import main.view.PersonViewController;
+import main.view.MainViewController;
 import main.view.RelationEditDialogController;
 
 public class MiniNet extends Application {
 
 	private Stage primaryStage;
 	private AnchorPane mainView;
-
+	// Collection of all people in MiniNet
 	private ObservableList<Person> personData = FXCollections.observableArrayList();
+	// Reference to the main view controller
+	public MainViewController controller;
 
+	/**
+	 * reads files to load initial data
+	 * 
+	 */
 	public MiniNet() throws Exception {
 		readPeople();
 		readRelation();
@@ -32,25 +40,25 @@ public class MiniNet extends Application {
 
 	public void readPeople() {
 		File file = new File("people.txt");
-
 		try {
-
 			Scanner sc = new Scanner(file);
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				String[] data = line.split(", ");
-				if (Integer.parseInt(data[4]) > 16) {
+				String[] data = line.split(", ");// divide line by " ,"
+				if (Integer.parseInt(data[4]) > 16) {// if age >16, adult
 					personData.add(new Adult(data[0], data[3], Integer.parseInt(data[4]), data[5], data[2], data[1]));
-				} else if (Integer.parseInt(data[4]) <= 2) {
+				} else if (Integer.parseInt(data[4]) <= 2) {// if age <2, young child
 					personData.add(
 							new YoundChild(data[0], data[3], Integer.parseInt(data[4]), data[5], data[2], data[1]));
-				} else {
+				} else {// if 2<= age <=16, child
 					personData.add(new Child(data[0], data[3], Integer.parseInt(data[4]), data[5], data[2], data[1]));
 				}
 			}
 			sc.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("people.txt file not found!");
+			alert.showAndWait();
 		}
 	}
 
@@ -64,12 +72,12 @@ public class MiniNet extends Application {
 				String line = sc.nextLine();
 				String[] data = line.split(", ");
 				for (int i = 0; i < personData.size(); i++) {
-					if (personData.get(i).getName().equals(data[0])) {
+					if (personData.get(i).getName().equals(data[0])) {// read person 1
 						p1 = personData.get(i);
-					} else if (personData.get(i).getName().equals(data[1])) {
+					} else if (personData.get(i).getName().equals(data[1])) {// read person 2
 						p2 = personData.get(i);
 					}
-				}
+				} // read relation
 				if (data[2].equals("couple")) {
 					((Adult) p1).addSpouse((Adult) p2);
 					((Adult) p2).addSpouse((Adult) p1);
@@ -99,10 +107,13 @@ public class MiniNet extends Application {
 			}
 			sc.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText("relations.txt file not found!");
+			alert.showAndWait();
 		}
 	}
 
+	// Getter of collection of people
 	public ObservableList<Person> getPersonData() {
 		return personData;
 	}
@@ -121,18 +132,19 @@ public class MiniNet extends Application {
 	 */
 	public void initMainView() {
 		try {
-			// Load root layout from fxml file.
+			// Load layout from fxml file.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MiniNet.class.getResource("view/MainView.fxml"));
 			mainView = loader.load();
-
-			// Show the scene containing the root layout.
+			// Show the scene containing the main view.
 			Scene scene = new Scene(mainView);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			// Show the list of persons.
-			PersonViewController controller = loader.getController();
+			// Controller for the view
+			MainViewController controller = loader.getController();
+			// references to each other
 			controller.setMiniNet(this);
+			this.controller = controller;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,7 +161,7 @@ public class MiniNet extends Application {
 	 */
 	public boolean showPersonEditDialog(Person person, boolean add) {
 		try {
-			// Load the fxml file and create a new stage for the popup dialog.
+			// Load the fxml file and create a new stage for the dialog.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MiniNet.class.getResource("view/PersonEditDialog.fxml"));
 			AnchorPane page = (AnchorPane) loader.load();
@@ -166,7 +178,7 @@ public class MiniNet extends Application {
 			PersonEditDialogController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setPerson(person, add);
-
+			controller.setMiniNet(this);
 			// Show the dialog and wait until the user closes it
 			dialogStage.showAndWait();
 
@@ -177,9 +189,15 @@ public class MiniNet extends Application {
 		}
 	}
 
+	/**
+	 * Opens a dialog to edit the relation between 2 persons. If the user clicks OK,
+	 * the changes are saved and true is returned.
+	 * 
+	 * @return true if the user clicked OK, false otherwise.
+	 */
 	public boolean showRelationEditDialog() {
 		try {
-			// Load the fxml file and create a new stage for the popup dialog.
+			// Load the fxml file and create a new stage for the dialog.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(MiniNet.class.getResource("view/RelationEditDialog.fxml"));
 			AnchorPane page = (AnchorPane) loader.load();
@@ -191,16 +209,11 @@ public class MiniNet extends Application {
 			dialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(page);
 			dialogStage.setScene(scene);
-
-			// Set the person into the controller.
 			RelationEditDialogController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setMiniNet(this);
-			// controller.setPerson(person,add);
-
 			// Show the dialog and wait until the user closes it
 			dialogStage.showAndWait();
-
 			return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();

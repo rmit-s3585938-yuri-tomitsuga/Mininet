@@ -1,6 +1,8 @@
 package main.view;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -32,6 +34,9 @@ public class RelationEditDialogController {
 	private Person person2;
 	private boolean okClicked = false;
 
+	/**
+	 * initializes the 2 tables of persons
+	 */
 	@FXML
 	private void initialize() {
 		nameColumn1.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
@@ -40,11 +45,13 @@ public class RelationEditDialogController {
 		table2Listener();
 	}
 
+	/**
+	 * listeners to show the relationship.
+	 */
 	private void table1Listener() {
 		personTable1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			relationLabel.setText("");
 			handleLabel();
-			choiceBoxListener(newValue);
 		});
 	}
 
@@ -52,16 +59,18 @@ public class RelationEditDialogController {
 		personTable2.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			relationLabel.setText("");
 			handleLabel();
-			choiceBoxListener(newValue);
 
 		});
 	}
 
+	/**
+	 * shows relationship depending on who are selected in 2 tables
+	 */
 	private void handleLabel() {
 		if (!personTable1.getSelectionModel().isEmpty()) {
 			Person p1 = personTable1.getSelectionModel().getSelectedItem();
 			Person p2 = personTable2.getSelectionModel().getSelectedItem();
-			if (p1.connections.containsKey(p2)) {
+			if (p1.connections.containsKey(p2)) {// if p2 is in the network of p1
 				if (p1.connections.get(p2).equals("spouse")) {
 					relationLabel.setText("Spouse");
 				} else if (p1.connections.get(p2).equals("parents") || p1.connections.get(p2).equals("kids")) {
@@ -76,18 +85,23 @@ public class RelationEditDialogController {
 			} else if (!p1.equals(p2))
 				relationLabel.setText("No direct relationship");
 		}
+		choiceBoxListener();
 	}
 
-	private void choiceBoxListener(Person person) {
-		chB.getItems().clear();
+	/**
+	 * shows different set of items in the choice box of changing relation,
+	 * depending on who are selected in 2 tables
+	 */
+	private void choiceBoxListener() {
+		chB.getItems().clear();// refresh the items
 		if (!personTable1.getSelectionModel().isEmpty() && !personTable1.getSelectionModel().isEmpty()) {
 			Person p1 = personTable1.getSelectionModel().getSelectedItem();
 			Person p2 = personTable2.getSelectionModel().getSelectedItem();
-			if (relationLabel.getText().equals("No direct relationship")) {
-
-			} else {
+			if (relationLabel.getText().equals("No direct relationship")) {// if no relation, new relation can be added
 				if (p1 instanceof SpouseRelation && p2 instanceof SpouseRelation) {
-					chB.getItems().add("Spouse");
+					if (((Adult) p1).getSpouse() == null && ((Adult) p2).getSpouse() == null) {
+						chB.getItems().add("Spouse");
+					}
 				}
 				if (p1 instanceof Adult && p2 instanceof Kid) {
 					if (((Kid) p2).parents.size() < 2) {
@@ -142,10 +156,11 @@ public class RelationEditDialogController {
 				((Adult) person2).addSpouse(person1);
 			} else if (chB.getSelectionModel().getSelectedItem() == "Parent") { // parent relation selected
 				if (person1 instanceof Adult && person2 instanceof Kid) {
-					((Adult) person1).addDependent((Kid) person2);
-					((Adult) person1).getSpouse().addDependent((Kid) person2);
+					((Adult) person1).addDependent((Kid) person2); // add dependent to both parents
+					((Kid) person2).addParent((Adult) person1);
 				} else if (person2 instanceof Adult && person1 instanceof Kid) {
-					((Adult) person2).getSpouse().addDependent((Kid) person1);
+					((Adult) person2).addDependent((Kid) person1); // add dependent to both parents
+					((Kid) person1).addParent((Adult) person2);
 				}
 			} else if (chB.getSelectionModel().getSelectedItem() == "Friend") { // friend relation selected
 				person1.addFriend(person2);
@@ -162,29 +177,20 @@ public class RelationEditDialogController {
 			add = true;
 		} catch (Exception e) {
 			add = false;
-			System.out.println(e.getMessage());
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
 		}
 		if (add) {
 			handleLabel();
 			okClicked = true;
-		} else {
-			// new dialog
 		}
 	}
 
 	/**
-	 * Called when the user clicks cancel.
+	 * Called when the user clicks disconnect.
 	 */
-	// relationLabel.setText("Spouse");
-	// } else if (p1.connections.get(p2).equals("parents") ||
-	// p1.connections.get(p2).equals("kids")) {
-	// relationLabel.setText("Parent & Child");
-	// } else if (p1.connections.get(p2).equals("friends")) {
-	// relationLabel.setText("Friends");
-	// } else if (p1.connections.get(p2).equals("colleagues")) {
-	// relationLabel.setText("Colleagues");
-	// } else if (p1.connections.get(p2).equals("classmates")) {
-	// relationLabel.setText("Classmates");
+
 	@FXML
 	private void handleDisconnect() throws Exception {
 		boolean add = true;
@@ -197,10 +203,20 @@ public class RelationEditDialogController {
 			} else if (relationLabel.getText() == "Parent & Child") { // parent relation
 				if (person1 instanceof Adult && person2 instanceof Kid) {
 					((Adult) person1).delDependent((Kid) person2);
-					((Adult) person1).getSpouse().delDependent((Kid) person2);
+					((Kid) person2).delParent((Adult) person1);
+					handleLabel();
+					okClicked = true;
+					Exception noParentException = new Exception(
+							"Warning! " + person2.getName() + " has only one or no parent now!");
+					throw noParentException;
 				} else if (person2 instanceof Adult && person1 instanceof Kid) {
 					((Adult) person2).delDependent((Kid) person1);
-					((Adult) person2).getSpouse().delDependent((Kid) person1);
+					((Kid) person1).delParent((Adult) person2);
+					handleLabel();
+					okClicked = true;
+					Exception noParentException = new Exception(
+							"Warning! " + person1.getName() + " has only one or no parent now!");
+					throw noParentException;
 				}
 			} else if (relationLabel.getText() == "Friends") { // friend relation selected
 				person1.delFriend(person2);
@@ -217,13 +233,13 @@ public class RelationEditDialogController {
 			add = true;
 		} catch (Exception e) {
 			add = false;
-			System.out.println(e.getMessage());
+			 Alert alert = new Alert(AlertType.ERROR);
+			 alert.setContentText(e.getMessage());
+			 alert.showAndWait();
 		}
 		if (add) {
 			handleLabel();
 			okClicked = true;
-		} else {
-			// new dialog
 		}
 	}
 
@@ -234,7 +250,6 @@ public class RelationEditDialogController {
 
 	public void setMiniNet(MiniNet miniNet) {
 		this.miniNet = miniNet;
-
 		// Add observable list data to the table
 		personTable1.setItems(miniNet.getPersonData());
 		personTable2.setItems(miniNet.getPersonData());

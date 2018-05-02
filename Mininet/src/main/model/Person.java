@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import main.model.*;
 import main.model.relation.FriendRelation;
 
 /**
@@ -19,6 +16,7 @@ import main.model.relation.FriendRelation;
  */
 public class Person implements FriendRelation {
 
+	// property values for view to get in the sync with the data
 	private final StringProperty name;
 	private final StringProperty gender;
 	private final IntegerProperty age;
@@ -26,6 +24,7 @@ public class Person implements FriendRelation {
 	private final StringProperty status;
 	private final StringProperty image;
 
+	// an overall collection the all the connections
 	public HashMap<Person, String> connections = new HashMap<Person, String>();
 	private List<Person> friends = new ArrayList<Person>();
 
@@ -37,8 +36,7 @@ public class Person implements FriendRelation {
 	}
 
 	/**
-	 * Constructor with some initial data.
-	 * 
+	 * Constructor.
 	 */
 	public Person(String name, String gender, Integer age, String state, String status, String image) {
 		this.name = new SimpleStringProperty(name);
@@ -48,9 +46,12 @@ public class Person implements FriendRelation {
 		this.state = new SimpleStringProperty(state);
 		this.status = new SimpleStringProperty(status);
 		this.image = new SimpleStringProperty(image);
-
 	}
 
+	/**
+	 * 
+	 * getters and setters
+	 */
 	public String getName() {
 		return name.get();
 	}
@@ -125,10 +126,9 @@ public class Person implements FriendRelation {
 
 	@Override
 	public boolean addFriend(Person person) throws Exception {
-		// TODO Auto-generated method stub
 		boolean add = true;
 		if (this instanceof Child) {
-			if (Math.abs(this.getAge() - person.getAge()) > 3) {
+			if (Math.abs(this.getAge() - person.getAge()) > 3) {// check age gap
 				add = false;
 				Exception marriedException = new Exception("Their age gap is over 3!");
 				throw marriedException;
@@ -144,10 +144,8 @@ public class Person implements FriendRelation {
 
 	@Override
 	public boolean delFriend(Person person) throws Exception {
-		// TODO Auto-generated method stub
 		this.friends.remove(person);
 		this.connections.remove(person);
 		return true;
 	}
-
 }

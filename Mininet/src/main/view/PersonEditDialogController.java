@@ -1,9 +1,14 @@
 package main.view;
 
+import java.io.File;
+
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import main.model.Adult;
+import main.MiniNet;
 import main.model.Person;
 
 /**
@@ -11,23 +16,32 @@ import main.model.Person;
  */
 public class PersonEditDialogController {
 
+	MiniNet miniNet;
+
 	@FXML
 	private TextField nameField;
 	@FXML
-	private TextField genderField;
+	private ChoiceBox<String> genderBox;
 	@FXML
-	private TextField stateField;
+	private ChoiceBox<String> stateBox;
 	@FXML
 	private TextField ageField;
 	@FXML
 	private TextField statusField;
+	@FXML
+	private TextField imageField;
 
 	private Stage dialogStage;
 	private Person person;
 	private boolean okClicked = false;
 
+	/**
+	 * initializes the choice box items.
+	 */
 	@FXML
 	private void initialize() {
+		genderBox.getItems().addAll("M", "F");
+		stateBox.getItems().addAll("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA");
 	}
 
 	/**
@@ -47,12 +61,13 @@ public class PersonEditDialogController {
 	public void setPerson(Person person, boolean add) {
 		this.person = person;
 
-		if(!add) {
-		nameField.setText(person.getName());
-		genderField.setText(person.getGender());
-		stateField.setText(person.getState());
-		ageField.setText(Integer.toString(person.getAge()));
-		statusField.setText(person.getStatus());
+		if (!add) {
+			nameField.setText(person.getName());
+			genderBox.getSelectionModel().select(person.getGender());
+			stateBox.getSelectionModel().select(person.getState());
+			ageField.setText(Integer.toString(person.getAge()));
+			statusField.setText(person.getStatus());
+			imageField.setText(person.getImage());
 		}
 	}
 
@@ -70,14 +85,35 @@ public class PersonEditDialogController {
 	 */
 	@FXML
 	private void handleOk() {
-		person.setName(nameField.getText());
-		person.setGender(genderField.getText());
-		person.setState(stateField.getText());
-		person.setAge(Integer.parseInt(ageField.getText()));
-		person.setStatus(statusField.getText());
-
-		okClicked = true;
-		dialogStage.close();
+		try {
+			// checks if age between 0,150
+			if (Integer.parseInt(ageField.getText()) > 150 || Integer.parseInt(ageField.getText()) < 0) {
+				Exception InvalidAgeException = new Exception("Age has to be between 0 and 150!");
+				throw InvalidAgeException;
+			}
+			File file = new File(imageField.getText());
+			if (!file.exists()&&!imageField.getText().isEmpty()) {
+				Exception ImageFoundException = new Exception("Image not found!");
+				throw ImageFoundException;
+			}
+			person.setName(nameField.getText());
+			person.setGender(genderBox.getSelectionModel().getSelectedItem());
+			person.setState(stateBox.getSelectionModel().getSelectedItem());
+			person.setAge(Integer.parseInt(ageField.getText()));
+			person.setStatus(statusField.getText());
+			person.setImage(imageField.getText());
+			okClicked = true;
+			dialogStage.close();
+			// throws exceptions
+		} catch (NumberFormatException e) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setContentText("An age has to be an integer!");
+			alert.showAndWait();
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
 	}
 
 	/**
@@ -88,4 +124,7 @@ public class PersonEditDialogController {
 		dialogStage.close();
 	}
 
+	public void setMiniNet(MiniNet miniNet) {
+		this.miniNet = miniNet;
+	}
 }

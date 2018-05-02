@@ -1,6 +1,5 @@
 package main.model.relation;
 
-import main.model.Adult;
 import main.model.Person;
 
 public interface ClassmateRelation {
