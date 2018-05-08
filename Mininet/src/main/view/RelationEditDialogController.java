@@ -28,6 +28,7 @@ public class RelationEditDialogController {
 	private Label relationLabel;
 
 	// Reference to the main application.
+	@SuppressWarnings("unused")
 	private MiniNet miniNet;
 	private Stage dialogStage;
 	private Person person1;
@@ -157,10 +158,14 @@ public class RelationEditDialogController {
 			} else if (chB.getSelectionModel().getSelectedItem() == "Parent") { // parent relation selected
 				if (person1 instanceof Adult && person2 instanceof Kid) {
 					((Adult) person1).addDependent((Kid) person2); // add dependent to both parents
+					((Adult) person1).getSpouse().addDependent((Kid) person2); 
 					((Kid) person2).addParent((Adult) person1);
+					((Kid) person2).addParent(((Adult) person1).getSpouse());
 				} else if (person2 instanceof Adult && person1 instanceof Kid) {
-					((Adult) person2).addDependent((Kid) person1); // add dependent to both parents
+					((Adult) person2).addDependent((Kid) person1);
+					((Adult) person2).getSpouse().addDependent((Kid) person1); // add dependent to both parents
 					((Kid) person1).addParent((Adult) person2);
+					((Kid) person1).addParent(((Adult) person2).getSpouse());
 				}
 			} else if (chB.getSelectionModel().getSelectedItem() == "Friend") { // friend relation selected
 				person1.addFriend(person2);

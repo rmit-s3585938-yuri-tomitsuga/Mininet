@@ -2,6 +2,7 @@ package main.view;
 
 import java.io.File;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -184,5 +185,10 @@ public class MainViewController {
 		this.miniNet = miniNet;
 		// Add observable list data to the table
 		personTable.setItems(miniNet.getPersonData());
+	}
+	
+	@FXML
+	private void handleExit() {
+		Platform.exit();
 	}
 }
