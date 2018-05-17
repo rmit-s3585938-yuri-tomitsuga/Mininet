@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.MiniNet;
 import main.model.Person;
@@ -29,7 +31,7 @@ public class PersonEditDialogController {
 	@FXML
 	private TextField statusField;
 	@FXML
-	private TextField imageField;
+	private Text imageField;
 
 	private Stage dialogStage;
 	private Person person;
@@ -78,6 +80,23 @@ public class PersonEditDialogController {
 	 */
 	public boolean isOkClicked() {
 		return okClicked;
+	}
+	/**
+	 * Choose file from file system
+	 */
+	@FXML
+	private void handleChoose() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose Image File");
+		fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JPEG", "*.jpeg"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("BMP", "*.bmp"),
+                new FileChooser.ExtensionFilter("GIF", "*.gif"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+		File file = fileChooser.showOpenDialog(this.miniNet.primaryStage);
+		this.imageField.setText(file.getAbsolutePath());
 	}
 
 	/**

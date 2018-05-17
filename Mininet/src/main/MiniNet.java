@@ -8,11 +8,13 @@ import java.util.Scanner;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.model.*;
@@ -22,7 +24,7 @@ import main.view.RelationEditDialogController;
 
 public class MiniNet extends Application {
 
-	private Stage primaryStage;
+	public Stage primaryStage;
 	private AnchorPane mainView;
 	// Collection of all people in MiniNet
 	private ObservableList<Person> personData = FXCollections.observableArrayList();
@@ -126,6 +128,7 @@ public class MiniNet extends Application {
 		initMainView();
 
 	}
+	
 
 	/**
 	 * Initializes the main view.
